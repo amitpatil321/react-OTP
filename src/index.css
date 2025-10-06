@@ -3,6 +3,7 @@
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 .app {
+  margin-top: 5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,4 +31,13 @@
   outline: none;
   border: 1px solid #888;
   box-shadow: 4px 4px 8px #cde2fa;
+}
+
+.input:read-only {
+  background: #f8f8f8;
+}
+
+input::placeholder {
+  color: #888;
+  opacity: 0.5;
 }

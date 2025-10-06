@@ -1,22 +1,22 @@
 import { useEffect, useRef } from "react"
+import { useOtpContext } from "../context/OtpContext"
 
 interface InputProps {
-  value: string
   index: number
-  currentFocus: number
-  setNumber: (index: number, val: string) => void
-  removeNumber: (index: number) => void
-  setFocusIndex: (index: number) => void
+  value: string
 }
 
-const Input = ({
-  index,
-  value,
-  currentFocus,
-  setFocusIndex,
-  removeNumber,
-  setNumber
-}: InputProps) => {
+const Input = ({ index, value }: InputProps) => {
+  const {
+    length,
+    placeholder,
+    readonly,
+    disabled,
+    currentFocus,
+    setNumber,
+    removeNumber,
+    setFocusIndex
+  } = useOtpContext()
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -31,8 +31,8 @@ const Input = ({
     if (!pasted) return
 
     const chars = pasted.split("")
-    chars.forEach((char, idx) => {
-      setNumber(index + idx, char)
+    new Array(length).fill("").forEach((_, idx) => {
+      setNumber(index + idx, chars[idx])
     })
     setFocusIndex(index + chars.length)
   }
@@ -46,12 +46,15 @@ const Input = ({
       }}
       onPaste={handlePaste}
       aria-label="OTP input field"
+      placeholder={placeholder || ""}
       value={value}
       className="input"
       type="text"
       id={`input-${index}`}
       tabIndex={index}
       maxLength={1}
+      readOnly={readonly}
+      disabled={disabled}
       onChange={(e) => setNumber(index, e.target.value)}
       onKeyDown={(e) => {
         if (e.key === "Backspace") {

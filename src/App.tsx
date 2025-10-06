@@ -7,7 +7,14 @@ function App() {
 
   return (
     <div className="app">
-      <OtpInput length={4} value="3333" onChange={setOtp} />
+      <OtpInput
+        value="4567"
+        length={4}
+        onChange={setOtp}
+        placeholder="_"
+        disabled={false}
+        readonly={false}
+      />
       {otp}
     </div>
   )

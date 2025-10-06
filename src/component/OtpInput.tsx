@@ -1,18 +1,26 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react"
+import { OtpContext } from "../context/OtpContext"
 import Input from "./Input"
 
 interface OtpInputProps {
   length: number
-  value: string
-  onChange: Dispatch<SetStateAction<string | string[]>>
+  value?: string
+  placeholder?: string | undefined
+  readonly?: boolean
+  disabled?: boolean
+  onChange?: Dispatch<SetStateAction<string | string[]>>
 }
 
-const OtpInput = ({ length, value, onChange }: OtpInputProps) => {
-  const emptyArray = new Array(length).fill("")
-  const [code, setCode] = useState<string[] | string>(value)
+const OtpInput = ({ length, value, placeholder, readonly, disabled, onChange }: OtpInputProps) => {
+  const formatCode = value ? value.split("") : new Array(length).fill("")
+  const [code, setCode] = useState<string[]>(formatCode)
   const [currentFocus, setFocusIndex] = useState<number>(1)
+  const emptyArray = new Array(length).fill("")
 
-  useEffect(() => onChange(code), [code])
+  if (typeof placeholder !== "string") console.error("Placeholder must be a string")
+  const charPlaceholder = placeholder ? placeholder[0] : ""
+
+  useEffect(() => onChange && onChange(code), [code])
 
   const setNumber = (index: number, char: string) => {
     setCode((prev) => {
@@ -32,20 +40,25 @@ const OtpInput = ({ length, value, onChange }: OtpInputProps) => {
     }
   }
 
+  const ContextProps = {
+    length,
+    currentFocus,
+    placeholder: charPlaceholder,
+    readonly,
+    disabled,
+    setNumber,
+    removeNumber,
+    setFocusIndex
+  }
+
   return (
-    <div className="otp-container">
-      {emptyArray.map((each, index) => (
-        <Input
-          key={each}
-          value={code[index]}
-          currentFocus={currentFocus}
-          index={index + 1}
-          setNumber={setNumber}
-          removeNumber={removeNumber}
-          setFocusIndex={setFocusIndex}
-        />
-      ))}
-    </div>
+    <OtpContext.Provider value={ContextProps}>
+      <div className="otp-container">
+        {emptyArray.map((_, index) => (
+          <Input key={Date.now() + index} index={index + 1} value={code[index]} />
+        ))}
+      </div>
+    </OtpContext.Provider>
   )
 }
 
