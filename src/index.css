@@ -2,6 +2,13 @@
   font-size: 16px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
 .app {
   margin-top: 5rem;
   display: flex;
@@ -15,13 +22,13 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  /* font-size: calc(10px + 2vmin); */
   gap: 1rem;
 }
 
 .input {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border: 1px solid #d8d8d8;
   border-radius: 6px;
   text-align: center;

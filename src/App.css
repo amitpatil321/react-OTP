@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.hamburger-menu {
+  display: inline-block;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.bar {
+  width: 25px;
+  height: 2px;
+  background-color: #888;
+  margin: 6px 0;
+  transition: 0.4s;
+}
+
+.controls input[type="text"],
+input[type="number"] {
+  @apply px-3 border border-gray-200 rounded-md outline-none focus:ring-1 focus:ring-blue-500 w-full h-10;
+}
