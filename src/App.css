@@ -20,3 +20,14 @@
 input[type="number"] {
   @apply px-3 border border-gray-200 rounded-md outline-none focus:ring-1 focus:ring-blue-500 w-full h-10;
 }
+
+button.btn {
+  @apply px-3 py-1 rounded-md text-white transition duration-200 ease-in-out;
+}
+
+button.btn-secondary {
+  @apply bg-gray-100 hover:bg-gray-300 text-gray-900;
+}
+button.btn-primary {
+  @apply bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400;
+}

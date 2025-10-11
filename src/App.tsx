@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, type ReactNode } from "react"
 import "./App.css"
 import { Hamburger } from "./component/Hamburger"
 import OtpInput from "./component/react-otp/OtpInput"
 
 function App() {
   const [isOpen, setOpen] = useState(true)
+  const [value, setValue] = useState<string>("")
   const [length, setLength] = useState<number>(4)
-  const [separator, setSeparator] = useState("-")
+  const [separator, setSeparator] = useState<string | ReactNode>("-")
   const [placeholder, setPlaceholder] = useState("_")
-  const [otp, setOtp] = useState<string | string[]>("")
+  const [otp, setOtp] = useState<string | string[]>([])
+  const [completed, setCompleted] = useState<boolean>(false)
 
   useEffect(() => {
     const handleResize = () => {
@@ -42,6 +44,18 @@ function App() {
 
         <div className="flex flex-col gap-5 p-4 controls">
           <div>
+            <label htmlFor="value" className="block mb-1 font-medium text-gray-700 text-sm">
+              Value
+            </label>
+            <input
+              type="text"
+              id="value"
+              placeholder="Value"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+            />
+          </div>
+          <div>
             <label htmlFor="length" className="block mb-1 font-medium text-gray-700 text-sm">
               No. of Inputs
             </label>
@@ -63,6 +77,7 @@ function App() {
             <input
               type="text"
               id="separator"
+              maxLength={1}
               value={separator}
               placeholder="Separator"
               onChange={(e) => setSeparator(e.target.value)}
@@ -94,16 +109,36 @@ function App() {
         </button>
 
         <OtpInput
-          value=""
+          value={value}
           length={length}
           onChange={setOtp}
           placeholder={placeholder}
-          // separator={separator}
+          separator={separator}
+          // separator={<span className="text-red-600">sep</span>}
           disabled={false}
           readonly={false}
+          onComplete={(status) => setCompleted(status)}
         />
-
-        <div className="font-mono text-gray-700 text-lg text-center break-all">{otp}</div>
+        <div className="flex flex-row gap-4">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => {
+              setValue("")
+              setOtp([])
+            }}
+          >
+            Clear
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            disabled={!completed}
+            onClick={() => alert(otp)}
+          >
+            Submit
+          </button>
+        </div>
       </div>
     </div>
   )
