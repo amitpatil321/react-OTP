@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react"
+import { useEffect, useState } from "react"
 import "./App.css"
 import { Hamburger } from "./component/Hamburger"
 import OtpInput from "./component/react-otp/OtpInput"
@@ -7,10 +7,14 @@ function App() {
   const [isOpen, setOpen] = useState(true)
   const [value, setValue] = useState<string>("")
   const [length, setLength] = useState<number>(4)
-  const [separator, setSeparator] = useState<string | ReactNode>("-")
+  const [separator, setSeparator] = useState<string>("-")
   const [placeholder, setPlaceholder] = useState("_")
   const [otp, setOtp] = useState<string | string[]>([])
   const [completed, setCompleted] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (Array.isArray(otp)) setValue(otp.join(""))
+  }, [otp])
 
   useEffect(() => {
     const handleResize = () => {
@@ -28,7 +32,7 @@ function App() {
   return (
     <div className="flex md:flex-row flex-col w-full h-dvh overflow-hidden">
       <div
-        className={`absolute md:static bg-white shadow-xl w-4/5 sm:w-2/3 md:w-1/3 lg:w-1/4 xl:w-1/5 h-dvh transform transition-transform duration-300 ease-in-out z-10
+        className={`absolute md:static bg-white shadow-xl w-4/5 sm:w-2/3 md:w-[50%] lg:w-[40%] xl:w-1/5 h-dvh transform transition-transform duration-300 ease-in-out z-10
       ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
         <div className="flex justify-between items-center px-3 py-4 border-gray-200 border-b">
@@ -114,7 +118,6 @@ function App() {
           onChange={setOtp}
           placeholder={placeholder}
           separator={separator}
-          // separator={<span className="text-red-600">sep</span>}
           disabled={false}
           readonly={false}
           onComplete={(status) => setCompleted(status)}
