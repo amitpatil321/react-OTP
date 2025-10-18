@@ -1,0 +1,22 @@
+.otp-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.otp-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.otp-input {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  box-sizing: border-box;
+}

@@ -17,34 +17,3 @@ body {
   justify-content: center;
   gap: 1rem;
 }
-.otp-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  /* font-size: calc(10px + 2vmin); */
-  gap: 1rem;
-}
-
-.input {
-  width: 40px;
-  height: 40px;
-  border: 1px solid #d8d8d8;
-  border-radius: 6px;
-  text-align: center;
-}
-
-.input:focus {
-  outline: none;
-  border: 1px solid #888;
-  box-shadow: 4px 4px 8px #cde2fa;
-}
-
-.input:read-only {
-  background: #f8f8f8;
-}
-
-input::placeholder {
-  color: #888;
-  opacity: 0.5;
-}

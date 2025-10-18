@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react"
 import "./App.css"
 import { Hamburger } from "./component/Hamburger"
-import OtpInput from "./component/react-otp/OtpInput"
+import ReactOtp from "./component/react-otp/ReactOtp"
+
+const CustomInput = (props: React.InputHTMLAttributes<HTMLInputElement>) => (
+  <input {...props} className="border border-gray-500 rounded-lg w-10 h-10 text-center" />
+)
 
 function App() {
   const [isOpen, setOpen] = useState(true)
-  const [value, setValue] = useState<string>("")
+  // const [value, setValue] = useState<string>("")
   const [length, setLength] = useState<number>(4)
   const [separator, setSeparator] = useState<string>("-")
   const [placeholder, setPlaceholder] = useState("_")
-  const [otp, setOtp] = useState<string | string[]>([])
-  const [completed, setCompleted] = useState<boolean>(false)
-
-  useEffect(() => {
-    if (Array.isArray(otp)) setValue(otp.join(""))
-  }, [otp])
+  const [otp, setOtp] = useState<string>("")
+  // const [completed, setCompleted] = useState<boolean>(false)
 
   useEffect(() => {
     const handleResize = () => {
@@ -32,7 +32,7 @@ function App() {
   return (
     <div className="flex md:flex-row flex-col w-full h-dvh overflow-hidden">
       <div
-        className={`absolute md:static bg-white shadow-xl w-4/5 sm:w-2/3 md:w-[50%] lg:w-[40%] xl:w-1/5 h-dvh transform transition-transform duration-300 ease-in-out z-10
+        className={`absolute md:static bg-white shadow-xl w-4/5 sm:w-2/3 md:w-[30%] lg:w-[25%] xl:w-1/5 h-dvh transform transition-transform duration-300 ease-in-out z-10 flex-shrink-0
       ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
         <div className="flex justify-between items-center px-3 py-4 border-gray-200 border-b">
@@ -55,8 +55,8 @@ function App() {
               type="text"
               id="value"
               placeholder="Value"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
             />
           </div>
           <div>
@@ -102,7 +102,6 @@ function App() {
           </div>
         </div>
       </div>
-
       <div className="relative flex flex-col flex-wrap justify-center items-center gap-6 px-4 py-8 w-full h-full">
         <button
           type="button"
@@ -111,34 +110,26 @@ function App() {
         >
           <Hamburger />
         </button>
-
-        <OtpInput
-          value={value}
+        <ReactOtp
+          value={otp}
+          separator={separator}
+          placeholder={placeholder}
           length={length}
           onChange={setOtp}
-          placeholder={placeholder}
-          separator={separator}
-          disabled={false}
-          readonly={false}
-          onComplete={(status) => setCompleted(status)}
+          inputType="text"
+          renderInput={(props) => <CustomInput {...props} />}
         />
         <div className="flex flex-row gap-4">
           <button
             type="button"
             className="btn btn-secondary"
             onClick={() => {
-              setValue("")
-              setOtp([])
+              setOtp("")
             }}
           >
             Clear
           </button>
-          <button
-            type="button"
-            className="btn btn-primary"
-            disabled={!completed}
-            onClick={() => alert(otp)}
-          >
+          <button type="button" className="btn btn-primary" onClick={() => alert(otp)}>
             Submit
           </button>
         </div>
