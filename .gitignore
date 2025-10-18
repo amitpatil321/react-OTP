@@ -8,6 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+node_modules_
 dist
 dist-ssr
 *.local
@@ -23,3 +24,5 @@ dist-ssr
 *.sln
 *.sw?
 todo.txt
+*storybook.log
+storybook-static
