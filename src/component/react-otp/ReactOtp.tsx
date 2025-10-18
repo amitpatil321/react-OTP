@@ -99,8 +99,9 @@ const ReactOtp = ({
           ref: (el: HTMLInputElement) => {
             inputRefs.current[index] = el
           },
+          "data-testid": "otp-input",
           id: `otpinput-${index}`,
-          autocomplete: "off",
+          autoComplete: "off",
           type: inputType,
           maxLength: 1,
           value: emptyArray[index],
@@ -124,7 +125,11 @@ const ReactOtp = ({
         return (
           <div className="otp-cell" key={index}>
             {input}
-            {separator && index < length - 1 && <span className="otp-sep">{separator}</span>}
+            {separator && index < length - 1 && (
+              <span className="otp-sep" data-testid="otp-sep">
+                {separator}
+              </span>
+            )}
           </div>
         )
       })}
