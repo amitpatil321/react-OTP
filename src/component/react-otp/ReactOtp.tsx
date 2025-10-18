@@ -100,6 +100,7 @@ const ReactOtp = ({
             inputRefs.current[index] = el
           },
           id: `otpinput-${index}`,
+          autocomplete: "off",
           type: inputType,
           maxLength: 1,
           value: emptyArray[index],
