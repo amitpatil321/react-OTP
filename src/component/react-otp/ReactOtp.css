@@ -6,7 +6,6 @@
   gap: 20px;
   flex-shrink: 0;
 }
-
 .otp-cell {
   display: inline-flex;
   align-items: center;
@@ -19,4 +18,11 @@
   height: 40px;
   text-align: center;
   box-sizing: border-box;
+  border: 1px solid #bebebe;
+  border-radius: 8px;
+}
+
+.otp-input:focus {
+  border: 1px solid var(--otp-color, #007bff);
+  outline: none;
 }

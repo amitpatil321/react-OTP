@@ -14,11 +14,12 @@ interface ReactOtpProps {
   value: string
   inputType?: "text" | "password"
   length: number
+  inputColor?: string
   onChange: (val: string) => void
   placeholder?: string
   readOnly?: boolean
   disabled?: boolean
-  autoFocus?: boolean
+  defaultFocus?: boolean
   separator?: string | ReactNode
   renderInput?: (
     props: InputHTMLAttributes<HTMLInputElement> & {
@@ -29,6 +30,7 @@ interface ReactOtpProps {
 
 const ReactOtp = ({
   value,
+  inputColor,
   inputType,
   separator,
   length,
@@ -36,7 +38,8 @@ const ReactOtp = ({
   renderInput,
   placeholder,
   readOnly,
-  disabled
+  disabled,
+  defaultFocus = false
 }: ReactOtpProps) => {
   const [code, setCode] = useState<string>(value)
   const [currentFocus, setFocusIndex] = useState<number>(0)
@@ -44,17 +47,24 @@ const ReactOtp = ({
 
   const emptyArray = Array.from({ length: length }, (_, i) => code?.[i] || "")
 
+  useEffect(() => {
+    if (defaultFocus) {
+      inputRefs.current[0]?.focus()
+      setFocusIndex(0)
+    }
+  }, [defaultFocus])
+
+  useEffect(() => {
+    if (!defaultFocus) return
+    if (currentFocus < length) {
+      inputRefs.current[currentFocus]?.focus()
+    }
+  }, [currentFocus, length, defaultFocus])
+
   // Keep parent `value` in sync
   useEffect(() => {
     setCode(value)
-  }, [value, code])
-
-  // when code changes, set next input as focused
-  useEffect(() => {
-    if (currentFocus < length) {
-      inputRefs.current[currentFocus]?.focus()
-    } else inputRefs.current[length - 1]?.focus()
-  }, [currentFocus, length])
+  }, [value])
 
   const handleChange = (value: string, index: number) => {
     const arr = code?.split("") || []
@@ -99,6 +109,7 @@ const ReactOtp = ({
           ref: (el: HTMLInputElement) => {
             inputRefs.current[index] = el
           },
+          className: "otp-input",
           "data-testid": "otp-input",
           id: `otpinput-${index}`,
           autoComplete: "off",
@@ -108,7 +119,7 @@ const ReactOtp = ({
           placeholder,
           readOnly,
           disabled,
-          autoFocus: index === 0,
+          // autoFocus: defaultFocus && index === 0,
           onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
             handleChange(event.target.value, index),
           onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) =>
@@ -119,7 +130,7 @@ const ReactOtp = ({
         const input = renderInput ? (
           renderInput(props)
         ) : (
-          <input style={{ width: "30px", height: "30px", textAlign: "center" }} {...props} />
+          <input style={{ "--otp-color": inputColor } as React.CSSProperties} {...props} />
         )
 
         return (

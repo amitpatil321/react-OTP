@@ -1,6 +1,6 @@
 /// <reference types="vitest/globals" />
 /// <reference types="@testing-library/jest-dom" />
-import { fireEvent, render, screen } from "@testing-library/react"
+import { cleanup, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import React, { act } from "react"
 import { vi } from "vitest"
@@ -14,9 +14,22 @@ describe("ReactOtp component", () => {
     expect(inputs).toHaveLength(4)
   })
 
+  test("defaultFocus focuses first input by default", () => {
+    const onChange = vi.fn()
+    render(<ReactOtp value={""} defaultFocus length={4} onChange={onChange} />)
+    const focused = screen.getAllByRole("textbox")
+    expect(focused[0]).toHaveFocus()
+
+    cleanup()
+
+    render(<ReactOtp value={""} defaultFocus={false} length={4} onChange={onChange} />)
+    const inputs = screen.getAllByRole("textbox")
+    expect(inputs[0]).not.toHaveFocus()
+  })
+
   test("typing in inputs updates value and focuses next input", async () => {
     const onChange = vi.fn()
-    render(<ReactOtp value={""} length={4} onChange={onChange} />)
+    render(<ReactOtp value={""} defaultFocus length={4} onChange={onChange} />)
     const user = userEvent.setup()
     const inputs = screen.getAllByRole("textbox")
 
@@ -31,7 +44,7 @@ describe("ReactOtp component", () => {
 
   test("backspace clears current input and focuses previous input", async () => {
     const onChange = vi.fn()
-    render(<ReactOtp value={"12"} length={4} onChange={onChange} />)
+    render(<ReactOtp value={"12"} defaultFocus length={4} onChange={onChange} />)
     const user = userEvent.setup()
     const inputs = screen.getAllByRole("textbox")
 
