@@ -1,153 +1,111 @@
-/// <reference types="vitest/globals" />
-/// <reference types="@testing-library/jest-dom" />
-import { cleanup, fireEvent, render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
-import React, { act } from "react"
-import { vi } from "vitest"
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { describe, expect, it, vi } from "vitest"
 import ReactOtp from "../component/react-otp/ReactOtp"
 
-describe("ReactOtp component", () => {
-  test("renders correct number of inputs based on length prop", () => {
-    const onChange = vi.fn()
-    render(<ReactOtp value={""} length={4} onChange={onChange} />)
+describe("ReactOtp Component", () => {
+  const setup = (props = {}) => {
+    const handleChange = vi.fn()
+    render(<ReactOtp value="" defaultFocus length={4} onChange={handleChange} {...props} />)
+    return { handleChange }
+  }
+
+  it("renders default inputs when no slots are passed", () => {
+    setup()
     const inputs = screen.getAllByRole("textbox")
     expect(inputs).toHaveLength(4)
   })
 
-  test("defaultFocus focuses first input by default", () => {
-    const onChange = vi.fn()
-    render(<ReactOtp value={""} defaultFocus length={4} onChange={onChange} />)
-    const focused = screen.getAllByRole("textbox")
-    expect(focused[0]).toHaveFocus()
-
-    cleanup()
-
-    render(<ReactOtp value={""} defaultFocus={false} length={4} onChange={onChange} />)
-    const inputs = screen.getAllByRole("textbox")
-    expect(inputs[0]).not.toHaveFocus()
-  })
-
-  test("typing in inputs updates value and focuses next input", async () => {
-    const onChange = vi.fn()
-    render(<ReactOtp value={""} defaultFocus length={4} onChange={onChange} />)
-    const user = userEvent.setup()
-    const inputs = screen.getAllByRole("textbox")
-
-    await user.type(inputs[0], "1")
-    expect(onChange).toHaveBeenCalled()
-    expect(inputs[1]).toHaveFocus()
-
-    await user.type(inputs[1], "2")
-    expect(onChange).toHaveBeenCalled()
-    expect(inputs[2]).toHaveFocus()
-  })
-
-  test("backspace clears current input and focuses previous input", async () => {
-    const onChange = vi.fn()
-    render(<ReactOtp value={"12"} defaultFocus length={4} onChange={onChange} />)
-    const user = userEvent.setup()
-    const inputs = screen.getAllByRole("textbox")
-
-    // focus on second input and press backspace
-    inputs[1].focus()
-    await user.keyboard("{Backspace}")
-    expect(onChange).toHaveBeenCalled()
-    expect(inputs[0]).toHaveFocus()
-  })
-
-  test("paste fills inputs accordingly", async () => {
-    const onChange = vi.fn()
-    render(<ReactOtp value={""} length={4} onChange={onChange} />)
-    const inputs = screen.getAllByRole("textbox")
-
-    // simulate paste event on first input
-    act(() => {
-      fireEvent.paste(inputs[0], {
-        clipboardData: {
-          getData: () => "1234"
-        }
-      })
-    })
-
-    expect(onChange).toHaveBeenCalledWith("1234")
-  })
-
-  test("renders custom input via renderInput prop", () => {
-    const onChange = vi.fn()
-    const CustomInput = (props: React.InputHTMLAttributes<HTMLInputElement>) => (
-      <input {...props} data-testid="custom-input" />
+  it("renders custom slot components when provided", () => {
+    type CustomContainerProps = React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>>
+    type CustomInputProps = React.InputHTMLAttributes<HTMLInputElement>
+    type CustomSeparatorProps = React.HTMLAttributes<HTMLSpanElement>
+    const CustomContainer: React.FC<CustomContainerProps> = ({
+      children,
+      ...rest
+    }: CustomContainerProps) => (
+      <div data-testid="custom-container" {...rest}>
+        {children}
+      </div>
     )
-
-    render(
-      <ReactOtp
-        value={""}
-        length={4}
-        onChange={onChange}
-        renderInput={(p) => <CustomInput {...p} />}
-      />
+    const CustomInput: React.FC<CustomInputProps> = ({ id, ...rest }: CustomInputProps) => (
+      <input id={id} {...rest} />
     )
+    const CustomSeparator: React.FC<CustomSeparatorProps> = (props) => (
+      <span data-testid="custom-separator" {...props}>
+        -
+      </span>
+    )
+    setup({
+      slots: {
+        Container: CustomContainer,
+        Input: CustomInput,
+        Separator: CustomSeparator
+      }
+    })
 
-    expect(screen.getAllByTestId("custom-input")).toHaveLength(4)
+    expect(screen.getByTestId("custom-container")).toBeInTheDocument()
+    expect(screen.getAllByTestId(/otp-input-/)).toHaveLength(4)
+    expect(screen.getAllByTestId("custom-separator")).toHaveLength(3)
   })
 
-  it("uses passed placeholder prop as placeholder", () => {
-    const onChange = vi.fn()
+  it("calls onChange when typing in input", () => {
+    const { handleChange } = setup()
+    const input = screen.getByTestId("otp-input-0")
+    fireEvent.change(input, { target: { value: "1" } })
+    expect(handleChange).toHaveBeenCalledWith("1")
+  })
 
-    render(<ReactOtp value={""} length={4} onChange={onChange} placeholder="_" />)
+  it("moves focus to next input when a character is entered", () => {
+    setup()
     const inputs = screen.getAllByRole("textbox")
-    expect(inputs[0]).toHaveAttribute("placeholder", "_")
-    expect(inputs[1]).toHaveAttribute("placeholder", "_")
-    expect(inputs[2]).toHaveAttribute("placeholder", "_")
-    expect(inputs[3]).toHaveAttribute("placeholder", "_")
+    fireEvent.change(inputs[0], { target: { value: "1" } })
+    const input = screen.getByTestId("otp-input-1")
+    expect(input).toHaveFocus()
   })
 
-  it("renders string separator correctly", () => {
-    const onChange = vi.fn()
-    render(<ReactOtp value="" length={4} onChange={onChange} separator="-" />)
-    const separators = screen.getAllByTestId("otp-sep")
-    expect(separators).toHaveLength(3)
-    separators.forEach((sep) => {
-      expect(sep).toHaveTextContent("-")
-    })
+  it("moves focus to previous input on backspace", () => {
+    setup({ value: "1234" })
+    const inputs = screen.getAllByRole("textbox")
+    inputs[3].focus()
+    fireEvent.keyDown(inputs[3], { key: "Backspace" })
+    expect(screen.getByTestId("otp-input-2")).toHaveFocus()
   })
 
-  it("renders html separator correctly", () => {
-    const onChange = vi.fn()
-    render(
-      <ReactOtp
-        value=""
-        length={4}
-        onChange={onChange}
-        separator={<span style={{ color: "red" }}>*</span>}
-      />
-    )
-    const separators = screen.getAllByTestId("otp-sep")
-    expect(separators).toHaveLength(3)
-    separators.forEach((sep) => {
-      const inner = sep.querySelector("span")
-      expect(inner).toHaveStyle("color: rgb(255, 0, 0)")
-      expect(inner).toHaveTextContent("*")
-      expect(sep).toHaveTextContent("*")
-    })
+  it("handles paste correctly", () => {
+    const { handleChange } = setup()
+    const inputs = screen.getAllByRole("textbox")
+    const event = {
+      preventDefault: vi.fn(),
+      clipboardData: { getData: vi.fn(() => "1234") }
+    } as unknown as React.ClipboardEvent<HTMLInputElement>
+
+    fireEvent.paste(inputs[0], event)
+    expect(handleChange).toHaveBeenCalledWith("1234")
   })
 
-  it("renders input type text correctly", () => {
-    const onChange = vi.fn()
-    render(<ReactOtp value="" length={4} onChange={onChange} inputType="text" />)
-    const textInputs = screen.getAllByRole("textbox")
-
-    textInputs.forEach((each) => {
-      expect(each).toHaveAttribute("type", "text")
-    })
+  it("focuses first input automatically when defaultFocus=true", () => {
+    setup({ defaultFocus: true })
+    expect(screen.getByTestId("otp-input-0")).toHaveFocus()
   })
 
-  it("renders input type password correctly", () => {
-    const onChange = vi.fn()
-    render(<ReactOtp value="" length={4} onChange={onChange} inputType="password" />)
-    const passInputs = screen.getAllByTestId("otp-input")
+  it("updates internal state when parent value changes", async () => {
+    const { rerender } = render(<ReactOtp value="1234" length={4} onChange={vi.fn()} />)
 
-    passInputs.forEach((each) => {
-      expect(each).toHaveAttribute("type", "password")
+    const inputs = screen.getAllByRole("textbox")
+    expect(inputs[0]).toHaveValue("1")
+    expect(inputs[1]).toHaveValue("2")
+    expect(inputs[2]).toHaveValue("3")
+    expect(inputs[3]).toHaveValue("4")
+
+    // ✅ rerender with new props
+    rerender(<ReactOtp value="5678" length={4} onChange={vi.fn()} />)
+
+    await waitFor(() => {
+      const updatedInputs = screen.getAllByRole("textbox")
+      expect(updatedInputs[0]).toHaveValue("5")
+      expect(updatedInputs[1]).toHaveValue("6")
+      expect(updatedInputs[2]).toHaveValue("7")
+      expect(updatedInputs[3]).toHaveValue("8")
     })
   })
 })
