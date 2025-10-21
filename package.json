@@ -2,7 +2,7 @@
   "name": "react-otp",
   "description": "A lightweight, accessible, and slot based fully customizable React OTP input component",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1-beta.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
