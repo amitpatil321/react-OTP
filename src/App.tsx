@@ -4,7 +4,10 @@ import { Hamburger } from "./component/Hamburger"
 import ReactOtp from "./component/react-otp/ReactOtp"
 
 const CustomInput = (props: React.InputHTMLAttributes<HTMLInputElement>) => (
-  <input {...props} className="border border-gray-500 rounded-lg w-10 h-10 text-center" />
+  <input
+    {...props}
+    className={`border border-gray-500 focus:border-blue-600 rounded-lg w-10 h-10 text-center ${props.className}`}
+  />
 )
 
 function App() {
@@ -112,12 +115,15 @@ function App() {
         </button>
         <ReactOtp
           value={otp}
-          separator={separator}
-          placeholder={placeholder}
           length={length}
           onChange={setOtp}
           inputType="text"
-          renderInput={(props) => <CustomInput {...props} />}
+          defaultFocus={true}
+          slots={{
+            Container: (props) => <div {...props} />,
+            Input: (props) => <CustomInput {...props} />,
+            Separator: (props) => <span {...props}>-</span>
+          }}
         />
         <div className="flex flex-row gap-4">
           <button

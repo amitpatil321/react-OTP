@@ -3,13 +3,8 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
   flex-shrink: 0;
-}
-.otp-cell {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .otp-input {

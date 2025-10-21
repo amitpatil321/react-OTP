@@ -1,52 +1,57 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-  type InputHTMLAttributes,
-  type JSX,
-  type ReactNode,
-  type Ref
-} from "react"
-
+import React, { useEffect, useRef, useState } from "react"
 import "./ReactOtp.css"
 
 interface ReactOtpProps {
   value: string
   inputType?: "text" | "password"
   length: number
-  inputColor?: string
   onChange: (val: string) => void
-  placeholder?: string
-  readOnly?: boolean
-  disabled?: boolean
   defaultFocus?: boolean
-  separator?: string | ReactNode
-  renderInput?: (
-    props: InputHTMLAttributes<HTMLInputElement> & {
-      ref?: Ref<HTMLInputElement> | undefined
-    }
-  ) => JSX.Element
+  slots?: {
+    Container?: React.ElementType<React.HTMLAttributes<HTMLElement>>
+    Input?: React.ElementType<React.InputHTMLAttributes<HTMLInputElement>>
+    Separator?: React.ElementType<React.HTMLAttributes<HTMLElement>>
+  }
 }
 
 const ReactOtp = ({
   value,
-  inputColor,
-  inputType,
-  separator,
+  slots = {},
+  inputType = "text",
   length,
   onChange,
-  renderInput,
-  placeholder,
-  readOnly,
-  disabled,
   defaultFocus = false
 }: ReactOtpProps) => {
   const [code, setCode] = useState<string>(value)
-  const [currentFocus, setFocusIndex] = useState<number>(0)
+  const [currentFocus, setFocusIndex] = useState<number>(defaultFocus ? 0 : -1)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
-  const emptyArray = Array.from({ length: length }, (_, i) => code?.[i] || "")
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      if (value === undefined) {
+        console.warn("ReactOtp: Missing `value` prop — component will not be controlled properly.")
+      }
+    }
+  }, [])
 
+  const {
+    Container = (props: React.HTMLAttributes<HTMLElement>) => (
+      <div className="otp-container" {...props} />
+    ),
+    Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => (
+      <input {...props} className={`otp-input ${props.className ?? ""}`} />
+    ),
+    Separator = (props: React.HTMLAttributes<HTMLElement>) => <span {...props}></span>
+  } = slots
+
+  // Sync internal state with parent value
+  useEffect(() => {
+    if (value !== code) {
+      setCode(value)
+    }
+  }, [value])
+
+  // Focus on first input if defaultFocus is true
   useEffect(() => {
     if (defaultFocus) {
       inputRefs.current[0]?.focus()
@@ -55,30 +60,26 @@ const ReactOtp = ({
   }, [defaultFocus])
 
   useEffect(() => {
-    if (!defaultFocus) return
     if (currentFocus < length) {
       inputRefs.current[currentFocus]?.focus()
     }
-  }, [currentFocus, length, defaultFocus])
+  }, [currentFocus, length])
 
-  // Keep parent `value` in sync
-  useEffect(() => {
-    setCode(value)
-  }, [value])
-
-  const handleChange = (value: string, index: number) => {
-    const arr = code?.split("") || []
-    arr[index] = value
-    const joined = arr.join("")
-    setCode(joined)
-    onChange(joined)
-    setFocusIndex(index + 1)
+  const handleChange = (val: string, index: number) => {
+    setCode((prev) => {
+      const arr = prev.split("")
+      arr[index] = val.slice(-1)
+      const joined = arr.join("")
+      onChange(joined)
+      if (val && index < length - 1) setFocusIndex(index + 1)
+      return joined
+    })
   }
 
   const handleBackSpace = (event: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     if (event.key === "Backspace") {
       event.preventDefault()
-      const arr = code?.split("") || []
+      const arr = code.split("")
       arr[index] = ""
       const joined = arr.join("")
       setCode(joined)
@@ -89,12 +90,11 @@ const ReactOtp = ({
 
   const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
     event.preventDefault()
-    const pasted = event.clipboardData.getData("text")
+    const pasted = event.clipboardData.getData("text").slice(0, length)
     if (!pasted) return
-    const chars = pasted.split("")
-    setCode(chars.join(""))
-    onChange(chars.join(""))
-    setFocusIndex(pasted.length)
+    setCode(pasted)
+    onChange(pasted)
+    setFocusIndex(pasted.length - 1)
   }
 
   const handleFocus = (event: React.FocusEvent<HTMLInputElement>, index: number) => {
@@ -102,49 +102,37 @@ const ReactOtp = ({
     setFocusIndex(index)
   }
 
+  const otpArray = Array.from({ length }, (_, i) => code[i] || "")
+
   return (
-    <div className="otp-container">
-      {emptyArray.map((_, index) => {
-        const props = {
+    <Container>
+      {otpArray.map((val, index) => {
+        const inputProps = {
           ref: (el: HTMLInputElement) => {
             inputRefs.current[index] = el
           },
+          "data-testid": `otp-input-${index}`,
+          "aria-label": `OTP input ${index + 1} of ${length}`,
           className: "otp-input",
-          "data-testid": "otp-input",
           id: `otpinput-${index}`,
           autoComplete: "off",
           type: inputType,
           maxLength: 1,
-          value: emptyArray[index],
-          placeholder,
-          readOnly,
-          disabled,
-          // autoFocus: defaultFocus && index === 0,
-          onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
-            handleChange(event.target.value, index),
-          onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) =>
-            handleBackSpace(event, index),
+          value: val,
+          onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange(e.target.value, index),
+          onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => handleBackSpace(e, index),
           onPaste: handlePaste,
-          onFocus: (event: React.FocusEvent<HTMLInputElement>) => handleFocus(event, index)
+          onFocus: (e: React.FocusEvent<HTMLInputElement>) => handleFocus(e, index)
         }
-        const input = renderInput ? (
-          renderInput(props)
-        ) : (
-          <input style={{ "--otp-color": inputColor } as React.CSSProperties} {...props} />
-        )
 
         return (
-          <div className="otp-cell" key={index}>
-            {input}
-            {separator && index < length - 1 && (
-              <span className="otp-sep" data-testid="otp-sep">
-                {separator}
-              </span>
-            )}
-          </div>
+          <React.Fragment key={index}>
+            <Input {...inputProps} />
+            {index < length - 1 && <Separator />}
+          </React.Fragment>
         )
       })}
-    </div>
+    </Container>
   )
 }
 
