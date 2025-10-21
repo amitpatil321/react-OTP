@@ -1,5 +1,6 @@
 {
-  "name": "react-vite-boilerplate",
+  "name": "react-otp",
+  "description": "A lightweight, accessible, and slot based fully customizable React OTP input component",
   "private": true,
   "version": "0.0.0",
   "type": "module",
