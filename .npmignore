@@ -28,3 +28,5 @@ src/main.tsx
 
 test-results/
 coverage/
+
+dist/*.map
