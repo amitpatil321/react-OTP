@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import "./ReactOtp.css"
 
-interface ReactOtpProps {
+export interface ReactOtpProps {
   value: string
   inputType?: "text" | "password"
   length: number

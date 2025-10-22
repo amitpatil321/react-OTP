@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationDir": "./dist",
+    "jsx": "react-jsx"
+  },
+  "include": ["src/component/react-otp/**/*", "index.ts"]
+}
