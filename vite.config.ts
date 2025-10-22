@@ -8,6 +8,23 @@ import eslintPlugin from "@nabla/vite-plugin-eslint"
 // Simple vitest config for unit tests only
 export default defineConfig({
   plugins: [react(), eslintPlugin()],
+  build: {
+    lib: {
+      entry: "./index.ts",
+      name: "ReactOtp",
+      fileName: "react-otp"
+    },
+    rollupOptions: {
+      external: ["react", "react-dom"],
+      input: "./index.ts",
+      output: {
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM"
+        }
+      }
+    }
+  },
   test: {
     globals: true,
     environment: "jsdom",

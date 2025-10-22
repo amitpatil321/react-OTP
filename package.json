@@ -2,7 +2,7 @@
   "name": "react-smart-otp",
   "description": "A lightweight, accessible, and slot based fully customizable React OTP input component",
   "private": false,
-  "version": "0.0.1-beta.0",
+  "version": "0.0.1-beta.1",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -14,6 +14,7 @@
   ],
   "scripts": {
     "dev": "vite",
+    "publish:beta": "npm version prerelease --preid=beta && npm publish --tag beta",
     "prepublishOnly": "npm run build",
     "build": "tsc -b && vite build",
     "test": "vitest",
