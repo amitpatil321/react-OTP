@@ -11,25 +11,28 @@ const packageJson = require("./package.json")
 export default [
   {
     input: "src/index.ts",
-    output: [
-      {
-        file: packageJson.main,
-        format: "cjs",
-        sourcemap: true
-      },
-      {
-        file: packageJson.module,
-        format: "esm",
-        sourcemap: true
-      }
-    ],
+    // output: [
+    // {
+    //   file: packageJson.main,
+    //   format: "cjs",
+    //   sourcemap: true
+    // },
+    // {
+    //   file: packageJson.module,
+    //   format: "esm",
+    //   sourcemap: true
+    // }
+    // ],
+    output: {
+      file: "dist/index.js",
+      format: "esm",
+      sourcemap: true
+    },
     plugins: [
       peerDepsExternal(),
-      // inject CSS into the JS bundles so consumers don't need to import the
-      // stylesheet manually. This places styles as side-effects in the
-      // generated bundles. If you'd rather provide a separate CSS file,
-      // change to `extract: 'index.css'`.
-      postcss({ inject: true, minimize: true, sourceMap: true }),
+      // extract CSS into a single `index.css` file at the package root
+      // so consumers (and SSR) can import it directly: `react-smart-otp/dist/index.css`.
+      postcss({ extract: "index.css", minimize: true, sourceMap: true }),
       resolve(),
       commonjs(),
       // Use a rollup-specific tsconfig that does NOT emit declarations. The

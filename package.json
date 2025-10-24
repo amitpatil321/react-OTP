@@ -7,12 +7,12 @@
   "main": "dist/cjs/index.cjs",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
+  "style": "dist/index.css",
   "files": [
     "dist",
     "README.md",
     "LICENSE"
   ],
-  "style": "dist/index.css",
   "exports": {
     ".": {
       "import": "./dist/esm/index.js",
