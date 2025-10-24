@@ -4,6 +4,7 @@ import terser from "@rollup/plugin-terser"
 import typescript from "@rollup/plugin-typescript"
 import dts from "rollup-plugin-dts"
 import peerDepsExternal from "rollup-plugin-peer-deps-external"
+import postcss from "rollup-plugin-postcss"
 
 const packageJson = require("./package.json")
 
@@ -24,23 +25,11 @@ export default [
     ],
     plugins: [
       peerDepsExternal(),
-      // simple inline CSS handler: return an empty module for `.css` imports so Rollup
-      // doesn't try to parse them as JS. This avoids adding an external dependency
-      // for a small library build. If you prefer to extract CSS, replace this with
-      // rollup-plugin-postcss or a similar plugin and install it as a devDependency.
-      {
-        name: "css-empty-module",
-        transform(code, id) {
-          if (id && id.endsWith(".css")) {
-            // exporting an empty string keeps import './foo.css' valid but produces no CSS bundle
-            return {
-              code: 'export default "";',
-              map: { mappings: "" }
-            }
-          }
-          return null
-        }
-      },
+      // inject CSS into the JS bundles so consumers don't need to import the
+      // stylesheet manually. This places styles as side-effects in the
+      // generated bundles. If you'd rather provide a separate CSS file,
+      // change to `extract: 'index.css'`.
+      postcss({ inject: true, minimize: true, sourceMap: true }),
       resolve(),
       commonjs(),
       // Use a rollup-specific tsconfig that does NOT emit declarations. The
