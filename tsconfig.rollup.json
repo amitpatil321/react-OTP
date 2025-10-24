@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    // Disable declaration emission here: rollup-plugin-dts will produce the single
+    // bundle for types instead of the TS plugin writing per-output declaration files.
+    "declaration": false,
+    "noEmit": false
+  },
+  "include": ["src"]
+}
