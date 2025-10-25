@@ -2,7 +2,7 @@
   "name": "react-smart-otp",
   "description": "A lightweight, accessible, and slot based fully customizable React OTP input component",
   "private": false,
-  "version": "0.0.1-beta.6",
+  "version": "0.0.1-beta.5",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
