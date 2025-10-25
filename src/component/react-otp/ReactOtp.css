@@ -9,8 +9,8 @@
 
 .otp-input {
   flex: 0 0 40px;
-  min-width: 40px !important;
-  min-height: 40px !important;
+  min-width: 40px;
+  min-height: 40px;
   text-align: center;
   box-sizing: border-box;
   border: 1px solid #bebebe;
@@ -18,6 +18,6 @@
 }
 
 .otp-input:focus {
-  border: 1px solid var(--otp-color, #007bff);
+  border: 1px solid #007bff;
   outline: none;
 }

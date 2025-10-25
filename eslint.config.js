@@ -66,7 +66,8 @@ export default tseslint.config(
       "react/button-has-type": "error",
       "react/react-in-jsx-scope": ["off"],
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
-      "jsx-a11y/no-autofocus": ["off"]
+      "jsx-a11y/no-autofocus": ["off"],
+      "react/prop-types": ["off"]
     }
   },
   storybook.configs["flat/recommended"]

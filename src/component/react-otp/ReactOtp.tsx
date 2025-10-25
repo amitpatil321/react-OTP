@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState } from "react"
 import "./ReactOtp.css"
 
+export type ContainerProps = React.HTMLAttributes<HTMLDivElement>
+export type InputProps = React.InputHTMLAttributes<HTMLInputElement>
+export type SeparatorProps = React.HTMLAttributes<HTMLSpanElement>
+
 export interface ReactOtpProps {
   value: string
   inputType?: "text" | "password"
@@ -27,22 +31,22 @@ const ReactOtp = ({
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
   useEffect(() => {
-    if (process.env.NODE_ENV === "development") {
-      if (value === undefined) {
-        console.warn("ReactOtp: Missing `value` prop — component will not be controlled properly.")
-      }
+    if (import.meta.env.MODE === "development" && value === undefined) {
+      console.warn("ReactOtp: Missing `value` prop — component will not be controlled properly.")
     }
   }, [])
 
-  const {
-    Container = (props: React.HTMLAttributes<HTMLElement>) => (
-      <div className="otp-container" {...props} />
-    ),
-    Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => (
-      <input {...props} className={`otp-input ${props.className ?? ""}`} />
-    ),
-    Separator = (props: React.HTMLAttributes<HTMLElement>) => <span {...props}></span>
-  } = slots
+  const Container: React.FC<ContainerProps> = slots.Container
+    ? (props) => React.createElement(slots.Container!, props)
+    : (props) => <div className="otp-container" {...props} />
+
+  const Input: React.FC<InputProps> = slots.Input
+    ? (props) => React.createElement(slots.Input!, props)
+    : (props) => <input className="otp-input" {...props} />
+
+  const Separator: React.FC<SeparatorProps> = slots.Separator
+    ? (props) => React.createElement(slots.Separator!, props)
+    : (props) => <span {...props} />
 
   // Sync internal state with parent value
   useEffect(() => {
@@ -113,7 +117,6 @@ const ReactOtp = ({
           },
           "data-testid": `otp-input-${index}`,
           "aria-label": `OTP input ${index + 1} of ${length}`,
-          className: "otp-input",
           id: `otpinput-${index}`,
           autoComplete: "off",
           type: inputType,
