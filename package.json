@@ -117,5 +117,13 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
-  }
+  },
+  "keywords": [
+    "passcode",
+    "otp-input",
+    "otp",
+    "input",
+    "code",
+    "component"
+  ]
 }
