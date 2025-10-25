@@ -150,4 +150,4 @@ Feel free to [open issues](https://github.com/amitpatil321/react-smart-otp/issue
 
 ## License
 
-Choose and add your license here (e.g. MIT).
+[License](https://github.com/amitpatil321/react-smart-otp/blob/main/LICENSE)
