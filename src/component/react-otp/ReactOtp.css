@@ -10,11 +10,19 @@
 .otp-input {
   flex: 0 0 40px;
   min-width: 40px;
+  width: 40px;
   min-height: 40px;
   text-align: center;
   box-sizing: border-box;
   border: 1px solid #bebebe;
   border-radius: 8px;
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .otp-input:focus {

@@ -7,7 +7,7 @@ export type SeparatorProps = React.HTMLAttributes<HTMLSpanElement>
 
 export interface ReactOtpProps {
   value: string
-  inputType?: "text" | "password"
+  inputType?: "text" | "password" | "number"
   length: number
   onChange: (val: string) => void
   defaultFocus?: boolean
