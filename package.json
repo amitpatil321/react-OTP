@@ -8,7 +8,7 @@
   "license": "MIT",
   "description": "A lightweight, accessible, and slot based fully customizable React OTP input component",
   "private": false,
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
