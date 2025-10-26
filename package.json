@@ -1,5 +1,11 @@
 {
   "name": "react-smart-otp",
+  "author": {
+    "name": "Amit Patil",
+    "email": "amitpatil321@gmail.com",
+    "url": "https://github.com/amitpatil321"
+  },
+  "license": "MIT",
   "description": "A lightweight, accessible, and slot based fully customizable React OTP input component",
   "private": false,
   "version": "0.0.3",
@@ -118,6 +124,14 @@
       "@commitlint/config-conventional"
     ]
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amitpatil321/react-smart-otp"
+  },
+  "bugs": {
+    "url": "https://github.com/amitpatil321/react-smart-otp/issues"
+  },
+  "homepage": "https://github.com/amitpatil321/react-smart-otp",
   "keywords": [
     "passcode",
     "otp-input",
