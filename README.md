@@ -34,10 +34,10 @@ function Verify() {
 ```tsx
 import { useState } from "react"
 import { ReactOtp } from "react-smart-otp"
-import "react-smart-otp/dist/index.css"
 import { Button } from "./components/ui/button"
 import { Card, CardContent } from "./components/ui/card"
 import { Input } from "./components/ui/input"
+import "react-smart-otp/dist/index.css"
 
 function App() {
   const [otp, setOtp] = useState("")
