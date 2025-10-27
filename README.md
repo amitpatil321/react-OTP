@@ -20,16 +20,14 @@ Lightweight, accessible, and flexible React OTP (one-time passcode) input compon
 
 ```tsx
 import React, { useState } from "react"
-import ReactOtp from "react-smart-otp"
+import { ReactOtp } from "react-smart-otp"
 // CSS required only when using default input slot and container
 import "react-smart-otp/dist/index.css"
 
 function Verify() {
   const [code, setCode] = useState("")
 
-  return (
-    <ReactOtp length={6} value={code} onChange={setCode} inputType="text" defaultFocus={true} />
-  )
+  return <ReactOtp length={6} value={code} onChange={setCode} />
 }
 ```
 
