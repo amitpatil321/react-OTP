@@ -34,6 +34,7 @@
     "dev": "vite",
     "build": "rollup -c --bundleConfigAsCjs",
     "publish:beta": "npm version prerelease --preid=beta && npm publish --tag beta",
+    "publish:patch": "npm version patch && npm publish --access public",
     "prepublishOnly": "npm run build",
     "test": "vitest",
     "test:ui": "vitest --ui",
