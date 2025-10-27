@@ -31,7 +31,7 @@ const ReactOtp = ({
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
   useEffect(() => {
-    if (import.meta.env.MODE === "development" && value === undefined) {
+    if (value === undefined) {
       console.warn("ReactOtp: Missing `value` prop — component will not be controlled properly.")
     }
   }, [])

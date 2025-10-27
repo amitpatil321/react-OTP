@@ -2,6 +2,10 @@
 
 Lightweight, accessible, and flexible React OTP (one-time passcode) input component with a slots API. Use it as-is for a simple, styled OTP row or supply custom slot components for deep UI-library integration (ShadCN, AntD, MUI, etc.).
 
+# Demo
+
+[Demo](https://codesandbox.io/p/sandbox/sp2jvf)
+
 ## Key features
 
 - Controlled API (pass `value` and `onChange`).
@@ -16,7 +20,7 @@ Lightweight, accessible, and flexible React OTP (one-time passcode) input compon
 
 ```tsx
 import React, { useState } from "react"
-import ReactOtp from "./src/component/react-otp/ReactOtp"
+import ReactOtp from "react-smart-otp"
 // CSS required only when using default input slot and container
 import "react-smart-otp/dist/index.css"
 
