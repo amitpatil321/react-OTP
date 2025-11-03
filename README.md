@@ -6,6 +6,11 @@ Lightweight, accessible, and flexible React OTP (one-time passcode) input compon
 
 [Demo](https://codesandbox.io/p/sandbox/sp2jvf)
 
+##### If you found this project helpful, a ⭐ on GitHub would mean a lot — it helps others discover it too!
+
+[![GitHub stars](https://img.shields.io/github/stars/amitpatil321/react-smart-otp?style=social)](https://github.com/amitpatil321/react-smart-otp)
+
+
 ## Key features
 
 - Controlled API (pass `value` and `onChange`).
